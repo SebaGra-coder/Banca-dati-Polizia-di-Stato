@@ -1,13 +1,9 @@
-# Disabilita la ricerca automatica di index.html
-DirectoryIndex flask_app.cgi
-
 Options +ExecCGI
 AddHandler cgi-script .cgi
 
-RewriteEngine On
-RewriteBase /
+DirectoryIndex flask_app.cgi
 
-# Se il file richiesto esiste (come un'immagine o un CSS), caricalo normalmente
+RewriteEngine On
+RewriteBase /QUIZ/
 RewriteCond %{REQUEST_FILENAME} !-f
-# Altrimenti, manda tutto al bridge Python
 RewriteRule ^(.*)$ flask_app.cgi/$1 [L,QSA]

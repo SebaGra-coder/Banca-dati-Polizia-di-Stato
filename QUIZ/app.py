@@ -8,7 +8,7 @@ app = Flask(__name__)
 # Configurazione MySQL Altervista
 # Nota: Su Altervista l'host è quasi sempre 'localhost'
 MYSQL_CONFIG = {
-    'host': 'localhosst',
+    'host': 'localhost',
     'user': 'giuliam', # Es: 'my_nomeutente'
     'password': '',        # Spesso vuota se configurata così su Altervista
     'database': 'my_giuliam',    # Es: 'my_nomeutente'
