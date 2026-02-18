@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card mb-4 text-center border-0 shadow-sm">
+    <div class="card-body py-4">
+        <h2 class="card-title mb-3">Risultato Finale</h2>
+        <div class="display-1 fw-bold mb-2 {% if punteggio >= totale * 0.6 %}text-success{% else %}text-danger{% endif %}">
+            {{ punteggio }}<span class="fs-4 text-muted">/{{ totale }}</span>
+        </div>
+        <p class="text-muted mb-4">Hai risposto correttamente a {{ punteggio }} domande.</p>
+        <a href="/" class="btn btn-primary btn-lg-mobile px-5">Nuovo Quiz</a>
+    </div>
+</div>
+
+<h4 class="mb-3 ms-1">Dettaglio Risposte</h4>
+
+{% for item in dettagli %}
+<div class="card mb-3 {% if item.esito %}border-success{% else %}border-danger{% endif %}" style="border-left-width: 5px;">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="badge {% if item.esito %}bg-success{% else %}bg-danger{% endif %}">
+                {% if item.esito %}Corretta{% else %}Errata{% endif %}
+            </span>
+            <span class="badge bg-light text-dark border badge-topic">{{ item.categoria }}</span>
+        </div>
+        
+        <p class="mt-2 fw-bold mb-3">{{ item.domanda }}</p>
+        
+        <div class="p-3 rounded mb-2 {% if item.esito %}bg-success-subtle text-success-emphasis{% else %}bg-danger-subtle text-danger-emphasis{% endif %}">
+            <strong>La tua risposta:</strong> {{ item.tua_lettera }}) {{ item.tua_risposta }}
+        </div>
+
+        {% if not item.esito %}
+        <div class="p-3 rounded bg-success-subtle text-success-emphasis">
+            <strong>Risposta corretta:</strong> {{ item.corretta_lettera }}) {{ item.corretta_testo }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+
+<div class="d-grid gap-2 col-md-6 mx-auto mt-4 pb-5">
+    <a href="/" class="btn btn-outline-primary btn-lg-mobile">Torna alla Home</a>
+</div>
+{% endblock %}

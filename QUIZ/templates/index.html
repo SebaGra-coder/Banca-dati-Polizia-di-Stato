@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card p-4">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold">Configura Quiz</h2>
+                <p class="text-muted">Seleziona argomento e numero di domande</p>
+            </div>
+            <form action="/quiz" method="POST">
+                <div class="mb-3">
+                    <label for="argomento" class="form-label fw-bold">Argomento</label>
+                    <select class="form-select form-select-lg" name="argomento" id="argomento">
+                        <option value="random">Casuale (Tutti)</option>
+                        <option value="costituzionale">Diritto Costituzionale</option>
+                        <option value="penale">Diritto Penale</option>
+                        <option value="processuale">Diritto Processuale Penale</option>
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="num_domande" class="form-label fw-bold">Numero Domande</label>
+                    <input type="number" class="form-control form-control-lg" name="num_domande" id="num_domande" value="10" min="1" max="100">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 btn-lg-mobile fw-bold">Inizia Quiz</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

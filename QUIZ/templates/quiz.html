@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form action="/risultato" method="POST">
+    {% for d in domande %}
+    <div class="card mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <span class="badge bg-secondary">Domanda {{ loop.index }} / {{ total_questions }}</span>
+        </div>
+        <div class="card-body">
+            <p class="question-text mb-3">{{ d.testo }}</p>
+            
+            <div class="d-flex flex-column">
+                {% for r in d.risposte %}
+                <div class="position-relative">
+                    <input type="radio" class="btn-check answer-input" name="q_{{ d.id }}" id="r_{{ r.id }}" value="{{ r.id }}" required>
+                    <label class="answer-option d-block w-100 answer-label-container" for="r_{{ r.id }}">
+                        <span class="fw-bold me-2">{{ r.lettera_visuale }})</span> {{ r.testo }}
+                    </label>
+                    <input type="hidden" name="L_{{ r.id }}" value="{{ r.lettera_visuale }}">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="d-grid gap-2 col-md-6 mx-auto pb-5">
+        <button type="submit" class="btn btn-success btn-lg-mobile fw-bold shadow">Consegna Risposte</button>
+    </div>
+</form>
+{% endblock %}
