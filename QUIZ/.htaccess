@@ -1,9 +1,0 @@
-Options +ExecCGI
-AddHandler cgi-script .cgi
-
-DirectoryIndex flask_app.cgi
-
-RewriteEngine On
-RewriteBase /QUIZ/
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*)$ flask_app.cgi/$1 [L,QSA]
