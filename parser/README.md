@@ -1,18 +1,26 @@
 # OCR parser
 
-This directory is reserved for the Python PDF/OCR pipeline and the separate SQLite answer-marking utility.
+Recovered Python OCR pipeline for extracting question blocks from the 2025 Vice Inspectors PDF, plus the separate script used to mark the correct option.
 
-## Dependencies
+## Requirements
 
-The recovered extraction script imports:
+Install the packages in `requirements.txt`. Tesseract OCR with Italian language data and Poppler must also be installed separately.
 
-- opencv-python
-- numpy
-- pytesseract
-- pdf2image
+## Configuration
 
-It also requires external installations of Tesseract OCR (Italian language data) and Poppler. Configure their executable paths and the input PDF path for your operating system before running.
+The parser accepts these environment variables:
 
-## Data safety
+- `SOURCE_PDF`: source PDF path (default: `Banca-dati-2025-Vice-Ispettori.pdf`)
+- `OUTPUT_DB`: SQLite output path (default: `data/banca_dati_blocchi.db`)
+- `POPPLER_BIN_PATH`: optional Poppler binary directory
+- `TESSERACT_CMD`: optional Tesseract executable path
+- `TOTAL_PAGES`: page count (default: 773)
 
-The current extraction implementation deletes the database at its configured output path when initializing it. Make a backup before execution. The answer-marking utility assumes that option A is the correct answer for each extracted question; verify that assumption against the source data.
+## Run
+
+```bash
+python Estrattore_dati.py
+python test.py
+```
+
+**Important:** the extraction script recreates and deletes the existing database at `OUTPUT_DB` before processing. Back it up first. The answer-marking script marks every option labelled A as correct, matching the recovered project workflow; validate that assumption against the source material before using the generated data.

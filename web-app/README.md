@@ -1,16 +1,14 @@
 # PHP / JavaScript quiz application
 
-This folder documents the PHP + JavaScript application recovered from the project working copy and used as the hosted quiz interface.
+This is the PHP + JavaScript quiz application recovered from the project working copy and used as the hosted interface.
 
-## Components
+- `index.html`: mobile-friendly interface, question navigation, answer selection and result review.
+- `data.php`: JSON endpoint that retrieves questions and answers from MySQL.
 
-- `index.html`: responsive quiz interface built with HTML, Bootstrap 5 and JavaScript.
-- `data.php`: JSON endpoint that reads questions and answers from MySQL.
-
-The application expects the MySQL tables `domande` and `risposte` described in [the architecture notes](../docs/architecture.md). Data is imported separately into the hosted MySQL database.
+The database is populated separately by importing the generated SQL data. The API expects the `domande` and `risposte` tables.
 
 ## Configuration
 
-Set database connection values in server-side configuration or environment variables. Do not put production credentials in PHP source files or commit them to Git.
+Set `DB_HOST`, `DB_USER`, `DB_PASSWORD` and `DB_NAME` as server environment variables. The public source intentionally contains no production credentials. Do not expose a production database password in a committed file.
 
-The original recovered PHP file contained hard-coded connection settings; those values must not be copied into a public repository. The deployable files should be reviewed and configured before publishing or deploying.
+The endpoint limits the requested number of questions to 1–100 and uses prepared statements for query parameters.
