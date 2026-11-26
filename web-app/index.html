@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quiz Polizia di Stato</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --bg-color: #f0f2f5;
+        }
+
+        body { 
+            background-color: var(--bg-color); 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .main-container {
+            max-width: 800px;
+            margin: auto;
+            padding: 15px;
+        }
+
+        .hidden { display: none !important; }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .answer-option {
+            display: block;
+            width: 100%;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+            position: relative;
+        }
+
+        .answer-option:active {
+            transform: scale(0.98);
+        }
+
+        input[type="radio"]:checked + .answer-option {
+            border-color: var(--primary-color);
+            background-color: #eef6ff;
+            box-shadow: 0 0 0 1px var(--primary-color);
+        }
+
+        .btn-mobile {
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-cat {
+            font-size: 0.8rem;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .quiz-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--bg-color);
+            padding: 10px 0;
+        }
+
+        .result-score {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        @media (max-width: 576px) {
+            .main-container { padding: 10px; }
+            .fs-4 { font-size: 1.25rem !important; }
+            .answer-option { padding: 15px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    
+    <div id="setup-section" class="py-4">
+        <div class="card p-4">
+            <div class="text-center mb-4">
+                <h1 class="h3 fw-bold">Preparazione Quiz</h1>
+                <p class="text-muted">Seleziona i parametri per iniziare</p>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-bold">Cosa vuoi studiare?</label>
+                <select class="form-select form-select-lg" id="argomento">
+                    <option value="random">Tutte le materie</option>
+                    <option value="costituzionale">Diritto Costituzionale</option>
+                    <option value="penale">Diritto Penale</option>
+                    <option value="processuale">Diritto Processuale Penale</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-bold">Quante domande?</label>
+                <input type="number" class="form-control form-control-lg" id="num_domande" value="10" inputmode="numeric">
+            </div>
+            <button onclick="iniziaQuiz()" class="btn btn-primary w-100 btn-mobile shadow-sm">Inizia Ora</button>
+        </div>
+    </div>
+
+    <div id="quiz-section" class="hidden">
+        <div class="quiz-header">
+            <div class="d-flex justify-content-between align-items-center bg-white p-3 rounded-pill shadow-sm border">
+                <span class="fw-bold text-primary" id="progressText">1 / 10</span>
+                <div class="progress w-50" style="height: 8px;">
+                    <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="py-3">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="fs-4 fw-bold mb-4" id="domanda-testo">Caricamento...</h2>
+                    <div id="risposte-container">
+                        </div>
+                </div>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button id="prev-btn" onclick="cambiaDomanda(-1)" class="btn btn-light flex-grow-1 btn-mobile border">Indietro</button>
+                <button id="next-btn" onclick="cambiaDomanda(1)" class="btn btn-primary flex-grow-1 btn-mobile shadow">Avanti</button>
+                <button id="submit-btn" onclick="mostraRisultati()" class="btn btn-success flex-grow-1 btn-mobile shadow hidden">Concludi</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-section" class="hidden py-4">
+        <div class="card text-center p-5 border-0 shadow">
+            <h2 class="fw-bold mb-4">Esito Quiz</h2>
+            <div class="result-score text-primary mb-2" id="score-display">0/0</div>
+            <p class="fs-5 text-muted mb-4" id="punteggio-testo"></p>
+            <button onclick="location.reload()" class="btn btn-primary btn-mobile px-5">Riprova il Quiz</button>
+        </div>
+
+        <h3 class="h5 fw-bold mt-5 mb-3 px-2">Correzione Domande</h3>
+        <div id="dettaglio-risposte"></div>
+    </div>
+
+</div>
+
+<script>
+let domande = [];
+let currentIndex = 0;
+let risposteUtente = {};
+
+function iniziaQuiz() {
+    const arg = document.getElementById('argomento').value;
+    const num = document.getElementById('num_domande').value;
+
+    fetch(`data.php?argomento=${arg}&limit=${num}`)
+        .then(r => r.json())
+        .then(data => {
+            domande = data;
+            document.getElementById('setup-section').classList.add('hidden');
+            document.getElementById('quiz-section').classList.remove('hidden');
+            renderDomanda();
+        });
+}
+
+function renderDomanda() {
+    const d = domande[currentIndex];
+    document.getElementById('domanda-testo').innerText = d.testo;
+    
+    const perc = ((currentIndex + 1) / domande.length) * 100;
+    document.getElementById('progressBar').style.width = perc + '%';
+    document.getElementById('progressText').innerText = `${currentIndex + 1} / ${domande.length}`;
+
+    const container = document.getElementById('risposte-container');
+    container.innerHTML = "";
+
+    if (!d.mescolate) {
+        d.risposte.sort(() => Math.random() - 0.5);
+        d.mescolate = true;
+    }
+
+    const labels = ['A', 'B', 'C', 'D', 'E'];
+    d.risposte.forEach((r, i) => {
+        const isChecked = risposteUtente[currentIndex]?.id === r.id ? 'checked' : '';
+        container.innerHTML += `
+            <div class="position-relative">
+                <input type="radio" class="btn-check" name="q" id="r${r.id}" value="${r.id}" onchange="salva(${r.id}, '${labels[i]}')" ${isChecked}>
+                <label class="answer-option" for="r${r.id}">
+                    <span class="fw-bold me-2">${labels[i]})</span> ${r.testo}
+                </label>
+            </div>`;
+    });
+
+    document.getElementById('prev-btn').style.visibility = (currentIndex === 0) ? 'hidden' : 'visible';
+    if (currentIndex === domande.length - 1) {
+        document.getElementById('next-btn').classList.add('hidden');
+        document.getElementById('submit-btn').classList.remove('hidden');
+    } else {
+        document.getElementById('next-btn').classList.remove('hidden');
+        document.getElementById('submit-btn').classList.add('hidden');
+    }
+    
+    window.scrollTo(0, 0);
+}
+
+function salva(id, lettera) {
+    risposteUtente[currentIndex] = { id: id, lettera: lettera };
+}
+
+function cambiaDomanda(n) {
+    currentIndex += n;
+    renderDomanda();
+}
+
+function mostraRisultati() {
+    document.getElementById('quiz-section').classList.add('hidden');
+    document.getElementById('result-section').classList.remove('hidden');
+
+    let punti = 0;
+    const lista = document.getElementById('dettaglio-risposte');
+    lista.innerHTML = "";
+
+    domande.forEach((d, i) => {
+        const scelta = risposteUtente[i];
+        const corretta = d.risposte.find(r => r.corretta === 1);
+        const labels = ['A', 'B', 'C', 'D', 'E'];
+        const letteraCorr = labels[d.risposte.indexOf(corretta)];
+        const isCorrect = scelta && scelta.id === corretta.id;
+        
+        if(isCorrect) punti++;
+
+        lista.innerHTML += `
+            <div class="card border-0 shadow-sm mb-3 overflow-hidden">
+                <div class="card-body p-4 border-start border-5 ${isCorrect ? 'border-success' : 'border-danger'}">
+                    <p class="fw-bold mb-3">${i+1}. ${d.testo}</p>
+                    <div class="p-3 rounded mb-2 ${isCorrect ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}">
+                        <strong>Tua risposta:</strong> ${scelta ? scelta.lettera : 'Non data'}
+                    </div>
+                    ${!isCorrect ? `<div class="p-3 rounded bg-success-subtle text-success"><strong>Corretta:</strong> ${letteraCorr}) ${corretta.testo}</div>` : ''}
+                </div>
+            </div>`;
+    });
+
+    document.getElementById('score-display').innerText = `${punti}/${domande.length}`;
+    document.getElementById('punteggio-testo').innerText = `Ottimo lavoro! Hai totalizzato ${punti} risposte corrette.`;
+    window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
