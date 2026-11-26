@@ -17,6 +17,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* Container ottimizzato per schermi piccoli */
         .main-container {
             max-width: 800px;
             margin: auto;
@@ -25,6 +26,7 @@
 
         .hidden { display: none !important; }
 
+        /* Card in stile Mobile (meno bordi, più ombra pulita) */
         .card {
             border: none;
             border-radius: 16px;
@@ -32,6 +34,7 @@
             margin-bottom: 20px;
         }
 
+        /* Opzioni di risposta giganti per il touch */
         .answer-option {
             display: block;
             width: 100%;
@@ -50,12 +53,14 @@
             transform: scale(0.98);
         }
 
+        /* Stile quando selezionato */
         input[type="radio"]:checked + .answer-option {
             border-color: var(--primary-color);
             background-color: #eef6ff;
             box-shadow: 0 0 0 1px var(--primary-color);
         }
 
+        /* Bottoni grandi per dita */
         .btn-mobile {
             padding: 15px 25px;
             font-size: 1.1rem;
@@ -65,6 +70,7 @@
             letter-spacing: 0.5px;
         }
 
+        /* Badge categorie */
         .badge-cat {
             font-size: 0.8rem;
             padding: 6px 12px;
@@ -73,6 +79,7 @@
             color: #495057;
         }
 
+        /* Header fisso per progresso su mobile */
         .quiz-header {
             position: sticky;
             top: 0;
@@ -81,6 +88,7 @@
             padding: 10px 0;
         }
 
+        /* Risultati */
         .result-score {
             font-size: 4rem;
             font-weight: 800;
@@ -89,7 +97,7 @@
 
         @media (max-width: 576px) {
             .main-container { padding: 10px; }
-            .fs-4 { font-size: 1.25rem !important; }
+            .fs-4 { font-size: 1.25rem !important; } /* Testo domanda leggermente più piccolo su smartphone */
             .answer-option { padding: 15px; font-size: 1rem; }
         }
     </style>
@@ -185,6 +193,7 @@ function renderDomanda() {
     const d = domande[currentIndex];
     document.getElementById('domanda-testo').innerText = d.testo;
     
+    // Progresso
     const perc = ((currentIndex + 1) / domande.length) * 100;
     document.getElementById('progressBar').style.width = perc + '%';
     document.getElementById('progressText').innerText = `${currentIndex + 1} / ${domande.length}`;
@@ -209,6 +218,7 @@ function renderDomanda() {
             </div>`;
     });
 
+    // Controllo bottoni
     document.getElementById('prev-btn').style.visibility = (currentIndex === 0) ? 'hidden' : 'visible';
     if (currentIndex === domande.length - 1) {
         document.getElementById('next-btn').classList.add('hidden');
