@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+
+# Local OCR/database artifacts
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+*.pdf
+*.jpg
+*.jpeg
+*.png
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
